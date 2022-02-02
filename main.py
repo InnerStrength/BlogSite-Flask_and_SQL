@@ -36,7 +36,7 @@ db = SQLAlchemy(app)
 # if running DB remotely for testing
 if not app.config["SQLALCHEMY_DATABASE_URI"]:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///blog.db"
-    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+    app.config['SECRET_KEY'] = "8BYkEfBA6O6donzWlSihBXox7C0sKR6b"
 
 # CONFIGURE TABLES
 class User(UserMixin, db.Model):
