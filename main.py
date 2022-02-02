@@ -28,11 +28,15 @@ gravatar = Gravatar(app,
                     base_url=None)
 
 
-##CONNECT TO DB
+# CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# if running DB remotely for testing
+if not app.config["SQLALCHEMY_DATABASE_URI"]:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///blog.db"
+    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 
 # CONFIGURE TABLES
 class User(UserMixin, db.Model):
@@ -71,10 +75,6 @@ class Comment(db.Model):
 db.create_all()
 
 
-
-
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -85,8 +85,7 @@ def admin_only(function):
     def decorated(*args, **kwargs):
         try:
             user_id = current_user.id
-            print(user_id)
-        except:
+        except None:
             user_id = 0
         if user_id == 1:
             return function(*args, **kwargs)
@@ -219,8 +218,6 @@ def delete_post(post_id):
     return redirect(url_for('get_all_posts'))
 
 
-
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run("127.0.0.1")
+
